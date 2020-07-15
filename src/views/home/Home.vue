@@ -2,24 +2,21 @@
 <template>
   <div id="home">
     <navbar class="home-nav-bar"></navbar>
-    <carousel :carouselList="carouselList"></carousel>
-    <recommend :recommends="recommends"></recommend>
-    <fearture></fearture>
-    <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabcontrol="tabcontrol"></tab-control>
-    <goods :goods="showGoods"></goods>
-
-    <ul>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-      <li>6</li>
-      <li>7</li>
-      <li>8</li>
-      <li>9</li>
-      <li>10</li>
-    </ul>
+    <scroll
+      class="content"
+      ref="scroll"
+      @scrollpositon="scrollpositon"
+      :probe-type="3"
+      :pull-up-load="true"
+      @pullingUp="loadmore"
+    >
+      <carousel :carouselList="carouselList"></carousel>
+      <recommend :recommends="recommends"></recommend>
+      <fearture></fearture>
+      <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabcontrol="tabcontrol"></tab-control>
+      <goods :goods="showGoods"></goods>
+    </scroll>
+    <back-top @click.native="backClick" v-show="isshowbacktop"></back-top>
   </div>
 </template>
 
@@ -29,6 +26,9 @@ import Recommend from "./childComponents/Recommends";
 import Fearture from "./childComponents/Feature";
 
 import Navbar from "components/common/navbar/Navbar";
+import Scroll from "components/common/scroll/Scroll";
+import BackTop from "components/common/backTop/BackTop";
+
 import TabControl from "components/content/tabControl/TabControl";
 import Goods from "components/content/goods/Goods";
 
@@ -44,7 +44,8 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] }
       },
-      currentType: "pop"
+      currentType: "pop",
+      isshowbacktop: false
     };
   },
   components: {
@@ -53,7 +54,9 @@ export default {
     Fearture,
     Navbar,
     TabControl,
-    Goods
+    Goods,
+    Scroll,
+    BackTop
   },
   //生命周期 - 创建完成（访问当前this实例）
   created() {
@@ -69,6 +72,7 @@ export default {
   },
   methods: {
     /* 事件监听方法 */
+    // tab监听事件
     tabcontrol(index) {
       switch (index) {
         case 0:
@@ -82,7 +86,21 @@ export default {
           break;
       }
     },
-
+    // 返回顶部事件
+    backClick() {
+      this.$refs.scroll.scrollTo(0, 0);
+    },
+    // 监听backtop组件 事件
+    scrollpositon(position) {
+      // console.log(position.y);
+      this.isshowbacktop = position.y < -1000;
+    },
+    // 监听加载事件
+    loadmore() {
+      this.getHomeGoods(this.currentType);
+      // 标识一次上拉加载动作结束，等待触发下一次事件
+      this.$refs.scroll.finishPullUp();
+    },
     /* 网络请求方法 */
     getHomeMultidata() {
       getHomeMultidata().then(res => {
@@ -97,7 +115,7 @@ export default {
       getHomeGoods(type, page).then(res => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
-        console.log(this.goods);
+        // console.log(this.goods);
       });
     }
   }
@@ -108,6 +126,8 @@ export default {
 
 #home {
   padding-top: 44px;
+  position: relative;
+  height: 100vh;
 }
 .home-nav-bar {
   background-color: var(--color-tint);
@@ -123,5 +143,13 @@ export default {
   position: sticky;
   top: 44px;
   z-index: 9;
+}
+.content {
+  /* height: 300px; */
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
+  right: 0;
 }
 </style>
