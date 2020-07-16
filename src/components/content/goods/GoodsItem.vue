@@ -1,15 +1,12 @@
 <!--  -->
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" />
+    <img :src="goodsItem.show.img" @load="imageload" />
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">￥{{goodsItem.price}}</span>
       <span class="collect">{{goodsItem.cfav}}</span>
     </div>
-    <!-- <h5>{{goodsItem.title}}</h5>
-      <h5>{{goodsItem.price}}</h5>
-    <h5>{{goodsItem.sale}}</h5>-->
   </div>
 </template>
 
@@ -25,6 +22,11 @@ export default {
   },
   data() {
     return {};
+  },
+  methods: {
+    imageload() {
+      this.$bus.$emit("imageIsLoad");
+    }
   },
   //生命周期 - 创建完成（访问当前this实例）
   created() {},

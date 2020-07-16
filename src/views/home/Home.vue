@@ -65,6 +65,17 @@ export default {
     this.getHomeGoods("pop");
     this.getHomeGoods("sell");
   },
+  mounted() {
+    // 监听图片加载完成
+    // this.$bus.$on("imageIsLoad", () => {
+    //   // console.log(123);
+    //   this.$refs.scroll && this.$refs.scroll.refresh();
+    // });
+    const refreshTime = this.debounce(this.$refs.scroll.refresh, 200);
+    this.$bus.$on("imageIsLoad", () => {
+      refreshTime();
+    });
+  },
   computed: {
     showGoods() {
       return this.goods[this.currentType].list;
@@ -72,6 +83,19 @@ export default {
   },
   methods: {
     /* 事件监听方法 */
+    // 防抖函数
+    debounce(func, delay) {
+      let timer = null;
+      return function(...args) {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          func.apply(this, args);
+        }, delay);
+      };
+    },
+
     // tab监听事件
     tabcontrol(index) {
       switch (index) {
