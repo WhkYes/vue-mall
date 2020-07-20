@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="toDetail">
     <img :src="goodsItem.show.img" @load="imageload" />
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
@@ -26,6 +26,9 @@ export default {
   methods: {
     imageload() {
       this.$bus.$emit("imageIsLoad");
+    },
+    toDetail() {
+      this.$router.push("/detail/" + this.goodsItem.iid);
     }
   },
   //生命周期 - 创建完成（访问当前this实例）
