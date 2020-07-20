@@ -2,6 +2,13 @@
 <template>
   <div id="home">
     <navbar class="home-nav-bar"></navbar>
+    <tab-control
+      class="tab-control"
+      :titles="['流行','新款','精选']"
+      @tabcontrol="tabcontrol"
+      v-show="istabshow"
+      ref="tabc1"
+    ></tab-control>
     <scroll
       class="content"
       ref="scroll"
@@ -10,10 +17,15 @@
       :pull-up-load="true"
       @pullingUp="loadmore"
     >
-      <carousel :carouselList="carouselList"></carousel>
+      <carousel :carouselList="carouselList" @loadcarousel="loadcarousel"></carousel>
       <recommend :recommends="recommends"></recommend>
       <fearture></fearture>
-      <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabcontrol="tabcontrol"></tab-control>
+      <tab-control
+        class="tab-control"
+        :titles="['流行','新款','精选']"
+        @tabcontrol="tabcontrol"
+        ref="tabc2"
+      ></tab-control>
       <goods :goods="showGoods"></goods>
     </scroll>
     <back-top @click.native="backClick" v-show="isshowbacktop"></back-top>
@@ -33,6 +45,7 @@ import TabControl from "components/content/tabControl/TabControl";
 import Goods from "components/content/goods/Goods";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
+import { debounce } from "common/debounce";
 
 export default {
   data() {
@@ -45,7 +58,9 @@ export default {
         sell: { page: 0, list: [] }
       },
       currentType: "pop",
-      isshowbacktop: false
+      isshowbacktop: false,
+      tabOffsetTop: 0,
+      istabshow: false
     };
   },
   components: {
@@ -71,10 +86,16 @@ export default {
     //   // console.log(123);
     //   this.$refs.scroll && this.$refs.scroll.refresh();
     // });
-    const refreshTime = this.debounce(this.$refs.scroll.refresh, 200);
+    const refreshTime = debounce(this.$refs.scroll.refresh, 200);
     this.$bus.$on("imageIsLoad", () => {
       refreshTime();
     });
+
+    // 获取tabcontrol的offsetTop
+    // console.log(this.$refs.tabc.$el.offsetTop);
+    // setTimeout(() => {
+    //   console.log(this.$refs.tabc.$el.offsetTop);
+    // }, 3000);
   },
   computed: {
     showGoods() {
@@ -84,17 +105,6 @@ export default {
   methods: {
     /* 事件监听方法 */
     // 防抖函数
-    debounce(func, delay) {
-      let timer = null;
-      return function(...args) {
-        if (timer) {
-          clearTimeout(timer);
-        }
-        timer = setTimeout(() => {
-          func.apply(this, args);
-        }, delay);
-      };
-    },
 
     // tab监听事件
     tabcontrol(index) {
@@ -109,6 +119,8 @@ export default {
           this.currentType = "sell";
           break;
       }
+      this.$refs.tabc1.currentIndex = index;
+      this.$refs.tabc2.currentIndex = index;
     },
     // 返回顶部事件
     backClick() {
@@ -118,6 +130,8 @@ export default {
     scrollpositon(position) {
       // console.log(position.y);
       this.isshowbacktop = position.y < -1000;
+      this.istabshow = -position.y > this.tabOffsetTop;
+      // console.log(this.istabshow);
     },
     // 监听加载事件
     loadmore() {
@@ -141,6 +155,11 @@ export default {
         this.goods[type].page += 1;
         // console.log(this.goods);
       });
+    },
+    loadcarousel() {
+      console.log(this.tabOffsetTop);
+      this.tabOffsetTop = this.$refs.tabc2.$el.offsetTop;
+      console.log(this.tabOffsetTop);
     }
   }
 };
@@ -164,8 +183,8 @@ export default {
   z-index: 9;
 }
 .tab-control {
-  position: sticky;
-  top: 44px;
+  /* top: 44px; */
+  position: relative;
   z-index: 9;
 }
 .content {

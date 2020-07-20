@@ -6,7 +6,7 @@
       <el-carousel-item v-for="(item,index) in carouselList" :key="index">
         <!-- <h3 class="small">{{ item.image }}</h3> -->
         <a :href="item.link">
-          <img v-bind:src="item.image" />
+          <img v-bind:src="item.image" @load="loadCarousel" />
         </a>
       </el-carousel-item>
     </el-carousel>
@@ -25,7 +25,17 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      isload: false
+    };
+  },
+  methods: {
+    loadCarousel() {
+      if (!this.isload) {
+        this.$emit("loadcarousel");
+        this.isload = true;
+      }
+    }
   },
   //生命周期 - 创建完成（访问当前this实例）
   created() {},
