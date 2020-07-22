@@ -157,9 +157,9 @@ export default {
       });
     },
     loadcarousel() {
-      console.log(this.tabOffsetTop);
+      // console.log(this.tabOffsetTop);
       this.tabOffsetTop = this.$refs.tabc2.$el.offsetTop;
-      console.log(this.tabOffsetTop);
+      // console.log(this.tabOffsetTop);
     }
   }
 };
