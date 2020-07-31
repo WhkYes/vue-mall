@@ -28,22 +28,23 @@ export default {
   data() {
     return {
       titles: ["商品", "参数", "评论", "推荐"],
-      currentindex: 0
+      currentindex: 0,
     };
   },
 
   methods: {
     titleClick(index) {
       this.currentindex = index;
+      this.$emit("indexNum", index);
     },
     backClick() {
       this.$router.go(-1);
-    }
+    },
   },
   //生命周期 - 创建完成（访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（访问DOM元素）
-  mounted() {}
+  mounted() {},
 };
 </script>
 <style scoped>

@@ -15,16 +15,16 @@ export default {
   props: {
     probeType: {
       type: Number,
-      default: 0
+      default: 0,
     },
     pullUpLoad: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      bs: null
+      bs: null,
     };
   },
   //生命周期 - 创建完成（访问当前this实例）
@@ -36,10 +36,10 @@ export default {
     this.bs = new BScroll(this.$refs.wrapper, {
       click: true,
       probeType: this.probeType,
-      pullUpLoad: this.pullUpLoad
+      pullUpLoad: this.pullUpLoad,
     });
     // 监听滚动时的位置
-    this.bs.on("scroll", position => {
+    this.bs.on("scroll", (position) => {
       this.$emit("scrollpositon", position);
     });
     // 监听上拉加载事件
@@ -56,8 +56,8 @@ export default {
     },
     refresh() {
       this.bs && this.bs.refresh();
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

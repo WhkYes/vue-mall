@@ -55,12 +55,12 @@ export default {
       goods: {
         pop: { page: 0, list: [] },
         new: { page: 0, list: [] },
-        sell: { page: 0, list: [] }
+        sell: { page: 0, list: [] },
       },
       currentType: "pop",
       isshowbacktop: false,
       tabOffsetTop: 0,
-      istabshow: false
+      istabshow: false,
     };
   },
   components: {
@@ -71,7 +71,7 @@ export default {
     TabControl,
     Goods,
     Scroll,
-    BackTop
+    BackTop,
   },
   //生命周期 - 创建完成（访问当前this实例）
   created() {
@@ -100,7 +100,7 @@ export default {
   computed: {
     showGoods() {
       return this.goods[this.currentType].list;
-    }
+    },
   },
   methods: {
     /* 事件监听方法 */
@@ -141,7 +141,7 @@ export default {
     },
     /* 网络请求方法 */
     getHomeMultidata() {
-      getHomeMultidata().then(res => {
+      getHomeMultidata().then((res) => {
         this.carouselList = res.data.banner.list;
         this.recommends = res.data.recommend.list;
         // console.log(this.recommends);z
@@ -150,7 +150,7 @@ export default {
     },
     getHomeGoods(type) {
       const page = this.goods[type].page + 1;
-      getHomeGoods(type, page).then(res => {
+      getHomeGoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
         // console.log(this.goods);
@@ -160,8 +160,8 @@ export default {
       // console.log(this.tabOffsetTop);
       this.tabOffsetTop = this.$refs.tabc2.$el.offsetTop;
       // console.log(this.tabOffsetTop);
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

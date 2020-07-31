@@ -10,6 +10,11 @@ export function getDetail(iid) {
     }
   })
 }
+export function getRecommend() {
+  return request({
+    url: "/api/mn/recommend"
+  })
+}
 
 export class GoodsInfo {
   constructor(itemInfo, columns, services) {

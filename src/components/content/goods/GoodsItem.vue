@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <div class="goods-item" @click="toDetail">
-    <img :src="goodsItem.show.img" @load="imageload" />
+    <img :src="showImage" @load="imageload" />
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">￥{{goodsItem.price}}</span>
@@ -17,24 +17,33 @@ export default {
       type: Object,
       default() {
         return {};
-      }
-    }
+      },
+    },
+  },
+  computed: {
+    showImage() {
+      return this.goodsItem.image || this.goodsItem.show.img;
+    },
   },
   data() {
     return {};
   },
   methods: {
     imageload() {
-      this.$bus.$emit("imageIsLoad");
+      if (this.$route.path.indexOf("/home") == 0) {
+        this.$bus.$emit("imageIsLoad");
+      } else if (this.$route.path.indexOf("/detail") == 0) {
+        this.$bus.$emit("detailImageLoad");
+      }
     },
     toDetail() {
       this.$router.push("/detail/" + this.goodsItem.iid);
-    }
+    },
   },
   //生命周期 - 创建完成（访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（访问DOM元素）
-  mounted() {}
+  mounted() {},
 };
 </script>
 <style scoped>
